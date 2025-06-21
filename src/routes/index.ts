@@ -111,7 +111,16 @@ router.get("/icons", async (req: Request, res: Response) => {
             const iconPath = path.join(iconsDir, `${icon.trim()}.svg`);
             try {
                 let content = await fs.readFile(iconPath, "utf-8");
-                content = content.replace(/^\uFEFF/, '').replace(/^\s+/, '');
+                content = content
+                  .replace(/<\?xml[\s\S]*?\?>\s*/g, '')                     // 移除 <?xml ... ?>
+                  .replace(/<!DOCTYPE[\s\S]*?\]>\s*/g, '')                  // 移除 <!DOCTYPE ... ]>
+                  .replace(/<!DOCTYPE[\s\S]*?>\s*/g, '')                    // 移除 <!DOCTYPE ... >
+                  .replace(/<metadata[\s\S]*?<\/metadata>\s*/gi, '')         // 移除 <metadata>...</metadata>
+                  .replace(/<switch[\s\S]*?<\/switch>\s*/gi, '')             // 移除 <switch>...</switch>
+                  .replace(/<foreignObject[\s\S]*?<\/foreignObject>\s*/gi, '') // 移除 <foreignObject>...</foreignObject>
+                  .replace(/<!ENTITY[\s\S]*?>\s*/g, '')                     // 移除 ENTITY 声明
+                  .replace(/^\uFEFF/, '')                                   // 移除 BOM
+                  .replace(/^\s+/, '');                                     // 移除开头空白
                 let radiusValue = Number(radius);
                 if (isNaN(radiusValue) || radiusValue < minRadius) {
                     radiusValue = minRadius
