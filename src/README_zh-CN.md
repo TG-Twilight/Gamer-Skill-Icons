@@ -27,8 +27,7 @@ GET /icons?i=ash
 
 示例：  
 <p> 
-![ash](./icons/fuze.svg )
-  <img src="./icons/fuze.svg" width="672"/>
+  <img src="https://github.com/TG-Twilight/R6-Operators-Icons/blob/main/icons/fuze.svg" width="672"/>
 </p>
 
 ---
