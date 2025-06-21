@@ -99,10 +99,10 @@ Object.entries(shortNames).forEach(([short, full]) => {
 });
 
 router.get("/icons", async (req: Request, res: Response) => {
-    const { i, perline, radius="25" } = req.query;
+    const { i, perline, radius = "25" } = req.query;
     const iconsDir = path.join(__dirname, "../../icons");
-    const minRadius = 0
-    const maxRadius = 100
+    const minRadius = 0;
+    const maxRadius = 100;
     if (i && typeof i === "string") {
         const iconsList = i.split(",");
         const fullIconsList = iconsList.map(icon => shortNames[icon.trim()] || icon.trim());
@@ -113,12 +113,13 @@ router.get("/icons", async (req: Request, res: Response) => {
                 let content = await fs.readFile(iconPath, "utf-8");
                 let radiusValue = Number(radius);
                 if (isNaN(radiusValue) || radiusValue < minRadius) {
-                    radiusValue = minRadius
+                    radiusValue = minRadius;
                 } else if (radiusValue > maxRadius) {
-                    radiusValue = maxRadius
+                    radiusValue = maxRadius;
                 }
+                // 可选：仅在你的 SVG 的确存在 <rect ...rx="..."> 时才替换
                 content = content.replace(/<rect([^>]*)rx="(\d+)"/, (match, before) => {
-                    return `<rect${before}rx="${radiusValue}"`
+                    return `<rect${before}rx="${radiusValue}"`;
                 });
                 icons.push(content);
             } catch (error) {
@@ -131,22 +132,28 @@ router.get("/icons", async (req: Request, res: Response) => {
                 message: "Not Found!",
                 hint: "Hmm... There's no valid icon."
             });
-        } else {
-            let response;
-            if (perline !== undefined) {
-                const perlineNumber = Number(perline);
-                if (!isNaN(perlineNumber) && perlineNumber > 0 && perlineNumber <= 15) {
-                    response = generateSVG(icons, perlineNumber);
-                } else {
-                    response = generateSVG(icons);
-                }
+        }
+        // 关键判断：单图标时直接返回原 SVG 内容
+        if (icons.length === 1) {
+            res.setHeader("Content-Type", "image/svg+xml");
+            return res.status(200).send(icons[0]);
+        }
+        // 多图标时拼接
+        let response;
+        if (perline !== undefined) {
+            const perlineNumber = Number(perline);
+            if (!isNaN(perlineNumber) && perlineNumber > 0 && perlineNumber <= 15) {
+                response = generateSVG(icons, perlineNumber);
             } else {
                 response = generateSVG(icons);
             }
-            res.setHeader("Content-Type", "image/svg+xml");
-            return res.status(200).send(response);
+        } else {
+            response = generateSVG(icons);
         }
+        res.setHeader("Content-Type", "image/svg+xml");
+        return res.status(200).send(response);
     } else {
+        // 你原有的列出所有图标部分
         try {
             const files = await fs.readdir(iconsDir);
             const icons = files
