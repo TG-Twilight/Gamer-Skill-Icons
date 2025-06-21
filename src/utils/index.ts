@@ -1,4 +1,3 @@
-// 解析 viewBox 的宽高
 function parseViewBox(svg: string): [number, number, number, number] {
     const match = svg.match(/viewBox="([\d.\s-]+)"/);
     if (!match) return [0, 0, 350, 350]; // 默认
@@ -14,22 +13,28 @@ export const generateSVG = (icons: string[], perLine: number = 15) => {
     const width = cols * ICON_SIZE;
     const height = rows * ICON_SIZE;
 
-    // 提取内容和 viewBox
-    const extractInner = (svg: string) => {
-        const match = svg.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
-        return match ? match[1] : svg;
+    // 提取 <svg ...viewBox="...">...</svg> 里的内容和viewBox
+    const extractSVG = (svg: string) => {
+        const match = svg.match(/<svg[^>]*viewBox="([^"]*)"[^>]*>([\s\S]*?)<\/svg>/i);
+        if (match) {
+            return {
+                viewBox: match[1],
+                content: match[2]
+            };
+        }
+        // fallback
+        return {
+            viewBox: `0 0 ${ICON_SIZE} ${ICON_SIZE}`,
+            content: svg
+        };
     };
 
-    // 拼接每个 icon，自动缩放居左上
+    // 拼接，每个icon包一层svg，自动由浏览器缩放
     const iconGroup = icons.map((svg, index) => {
         const x = (index % perLine) * ICON_SIZE;
         const y = Math.floor(index / perLine) * ICON_SIZE;
-        const [vx, vy, vw, vh] = parseViewBox(svg);
-        // 计算缩放
-        const scale = Math.min(ICON_SIZE / vw, ICON_SIZE / vh);
-        // 注意要把内容平移到 0,0
-        const translate = `translate(${-vx * scale},${-vy * scale}) scale(${scale})`;
-        return `<g transform="translate(${x},${y}) ${translate}">${extractInner(svg)}</g>`;
+        const { viewBox, content } = extractSVG(svg);
+        return `<svg x="${x}" y="${y}" width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg">${content}</svg>`;
     }).join("\n");
 
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" 
