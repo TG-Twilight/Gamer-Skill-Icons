@@ -121,6 +121,7 @@ router.get("/icons", async (req: Request, res: Response) => {
                   .replace(/<!ENTITY[\s\S]*?>\s*/g, '')                     // 移除 ENTITY 声明
                   .replace(/^\uFEFF/, '')                                   // 移除 BOM
                   .replace(/^\s+/, '');                                     // 移除开头空白
+                content = content.replace(/^\uFEFF/, '').replace(/^\s+/, '');
                 let radiusValue = Number(radius);
                 if (isNaN(radiusValue) || radiusValue < minRadius) {
                     radiusValue = minRadius
