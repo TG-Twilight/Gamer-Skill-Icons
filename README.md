@@ -74,10 +74,10 @@ Returns a JSON list of all operator IDs.
 
 ### Defender Example (each icon 96×96)
 
-[https://r6-operators-icons.vercel.app/api/icons?i=rrecruit_red,rook,kapkan,mute,smoke,jager,azami](https://r6-operators-icons.vercel.app/api/icons?i=rrecruit_red,rook,kapkan,mute,smoke,jager,azami)
+[https://r6-operators-icons.vercel.app/api/icons?i=rrecruit_red,rook,kapkan,mute,smoke,jager,azami](https://r6-operators-icons.vercel.app/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami)
 
 <p>
-  <img src="https://r6-operators-icons.vercel.app/api/icons?i=rrecruit_red,rook,kapkan,mute,smoke,jager,azami" width="672"/>
+  <img src="https://r6-operators-icons.vercel.app/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami" width="672"/>
 </p>
 
 ---
