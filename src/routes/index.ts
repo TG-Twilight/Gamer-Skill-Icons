@@ -121,6 +121,11 @@ router.get("/icons", async (req: Request, res: Response) => {
                   .replace(/<!ENTITY[\s\S]*?>\s*/g, '')                     // 移除 ENTITY 声明
                   .replace(/xmlns:[a-zA-Z0-9]+="&[a-zA-Z0-9_]+;"/g, '')     // 清除所有类似 xmlns:x="&ns_extend;" 这种带实体引用的命名空间声明
                   .replace(/^\uFEFF/, '')                                   // 移除 BOM
+                  .replace(/<i:[^>]+>[\s\S]*?<\/i:[^>]+>/g, '')             // 移除所有 <i:xxx>...</i:xxx> 标签
+                  .replace(/<i:[^/>]+\/>/g, '')                             // 移除所有自闭合 <i:xxx ... /> 标签
+                  .replace(/ i:[a-zA-Z0-9:-]+="[^"]*"/g, '')                // 移除属性中的 i:xxx="..."
+                  .replace(/ i:[a-zA-Z0-9:-]+='[^']*'/g, '')                // 移除属性中的 i:xxx='...'
+                  .replace(/ i:[a-zA-Z0-9:-]+\b/g, '')                      // 移除没有值的 i:xxx 属性
                   .replace(/^\s+/, '');                                     // 移除开头空白
                 let radiusValue = Number(radius);
                 if (isNaN(radiusValue) || radiusValue < minRadius) {
