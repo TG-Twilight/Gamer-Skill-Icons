@@ -124,4 +124,4 @@ MIT License © 2025-present [TG-Twilight](https://github.com/TG-Twilight)
 
 ## 中文文档
 
-See [`README_zh-CN.md`](./README_zh-CN.md)
+See [`README_zh-CN.md`](./src/README_zh-CN.md)
