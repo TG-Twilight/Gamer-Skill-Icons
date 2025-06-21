@@ -113,12 +113,14 @@ function cleanSVG(svg: string): string {
         .replace(/^\s+/, '');
 }
 
-// 只去掉 <svg ...> 和 </svg> 标签本身，保留里面的内容
-function extractSvgContent(svg: string): string {
-    return svg.replace(/^<svg[^>]*?>/i, '').replace(/<\/svg>\s*$/i, '');
+// 新增: 只提取主 <g> ... </g>，去掉 <switch> <foreignObject> 等外层
+function extractMainG(svg: string): string {
+    let inner = svg.replace(/^<svg[\s\S]*?>/i, '').replace(/<\/svg>\s*$/i, '');
+    const match = inner.match(/<g[^>]*>[\s\S]*<\/g>/i);
+    return match ? match[0] : inner;
 }
 
-// 拼接多个SVG图标为一个大SVG（不嵌套svg，只拼内容）
+// 拼接多个SVG图标为一个大SVG（不嵌套svg，只拼 <g> 内容）
 function generateSVG(icons: string[], perline = 0) {
     const groupWidth = 300;
     const groupHeight = 256;
@@ -127,12 +129,12 @@ function generateSVG(icons: string[], perline = 0) {
         for (let i = 0; i < icons.length; i++) {
             const x = (i % perline) * groupWidth;
             const y = Math.floor(i / perline) * groupHeight;
-            svgGroups += `<g transform="translate(${x}, ${y})">\n${extractSvgContent(icons[i])}\n</g>\n`;
+            svgGroups += `<g transform="translate(${x}, ${y})">\n${extractMainG(icons[i])}\n</g>\n`;
         }
     } else {
         for (let i = 0; i < icons.length; i++) {
             const x = i * groupWidth;
-            svgGroups += `<g transform="translate(${x}, 0)">\n${extractSvgContent(icons[i])}\n</g>\n`;
+            svgGroups += `<g transform="translate(${x}, 0)">\n${extractMainG(icons[i])}\n</g>\n`;
         }
     }
     const width = perline && perline > 0 ? groupWidth * Math.min(perline, icons.length) : groupWidth * icons.length;
@@ -181,7 +183,7 @@ router.get("/icons", async (req: Request, res: Response) => {
             // 只返回清洗后的原SVG
             return res.status(200).send(cleanSVG(icons[0]));
         } else {
-            // 多个图标拼为一个SVG（不嵌套svg，只拼内容）
+            // 多个图标拼为一个SVG（只拼 <g> 内容）
             let response: string;
             if (perline !== undefined) {
                 const perlineNumber = Number(perline);
