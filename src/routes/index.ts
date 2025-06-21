@@ -113,14 +113,23 @@ function cleanSVG(svg: string): string {
         .replace(/^\s+/, '');
 }
 
-// 新增: 只提取主 <g> ... </g>，去掉 <switch> <foreignObject> 等外层
-function extractMainG(svg: string): string {
+// 只提取 <switch> 里的 <g>...</g>，否则取第一个 <g>
+function extractIconContent(svg: string): string {
+    // 去掉 <svg> 包裹
     let inner = svg.replace(/^<svg[\s\S]*?>/i, '').replace(/<\/svg>\s*$/i, '');
-    const match = inner.match(/<g[^>]*>[\s\S]*<\/g>/i);
-    return match ? match[0] : inner;
+    // 如果有 <switch>，取 <switch> 里第一个 <g>...</g>
+    const switchMatch = inner.match(/<switch[\s\S]*?<\/switch>/i);
+    if (switchMatch) {
+        // 在 <switch> 里找 <g>...</g>
+        const gMatch = switchMatch[0].match(/<g[^>]*>[\s\S]*<\/g>/i);
+        if (gMatch) return gMatch[0];
+    }
+    // 否则直接找第一个 <g>...</g>
+    const gMatch = inner.match(/<g[^>]*>[\s\S]*<\/g>/i);
+    return gMatch ? gMatch[0] : inner;
 }
 
-// 拼接多个SVG图标为一个大SVG（不嵌套svg，只拼 <g> 内容）
+// 拼接多个SVG图标为一个大SVG（只拼内容，不嵌套switch/foreignObject）
 function generateSVG(icons: string[], perline = 0) {
     const groupWidth = 300;
     const groupHeight = 256;
@@ -129,12 +138,12 @@ function generateSVG(icons: string[], perline = 0) {
         for (let i = 0; i < icons.length; i++) {
             const x = (i % perline) * groupWidth;
             const y = Math.floor(i / perline) * groupHeight;
-            svgGroups += `<g transform="translate(${x}, ${y})">\n${extractMainG(icons[i])}\n</g>\n`;
+            svgGroups += `<g transform="translate(${x}, ${y})">\n${extractIconContent(icons[i])}\n</g>\n`;
         }
     } else {
         for (let i = 0; i < icons.length; i++) {
             const x = i * groupWidth;
-            svgGroups += `<g transform="translate(${x}, 0)">\n${extractMainG(icons[i])}\n</g>\n`;
+            svgGroups += `<g transform="translate(${x}, 0)">\n${extractIconContent(icons[i])}\n</g>\n`;
         }
     }
     const width = perline && perline > 0 ? groupWidth * Math.min(perline, icons.length) : groupWidth * icons.length;
@@ -178,9 +187,8 @@ router.get("/icons", async (req: Request, res: Response) => {
                 hint: "Hmm... There's no valid icon."
             });
         } else if (icons.length === 1) {
-            // 单个图标，直接返回SVG
+            // 单个图标，直接返回SVG（注意不再extractIconContent，直接原内容）
             res.setHeader("Content-Type", "image/svg+xml");
-            // 只返回清洗后的原SVG
             return res.status(200).send(cleanSVG(icons[0]));
         } else {
             // 多个图标拼为一个SVG（只拼 <g> 内容）
