@@ -1,21 +1,24 @@
 export const generateSVG = (icons: string[], perLine: number = 15) => {
-    const ICON_SIZE = 256; // 你的主图标尺寸，如果都是350就用350
-    const GAP = 44.25;     // 原项目的间距
+    // 取所有icons的viewBox宽高，假定都一样（如果不一样可进一步适配）
+    const getViewBox = (svg: string) => {
+        const match = svg.match(/viewBox="([\d.\s-]+)"/i);
+        if (!match) return [0, 0, 350, 350];
+        return match[1].split(/\s+/).map(Number);
+    };
+    const [vx, vy, vw, vh] = getViewBox(icons[0]); // 用第一个icon的viewBox
+
+    const ICON_SIZE = vw; // 使用viewBox宽度
+    const GAP = 0; // 你可以根据需求调整格子间距，默认0
     const cols = Math.min(perLine, icons.length);
     const rows = Math.ceil(icons.length / perLine);
     const width = cols * ICON_SIZE + (cols - 1) * GAP;
     const height = rows * ICON_SIZE;
 
-    // 提取整个 <svg ...>...</svg> 块
-    const extractSVG = (svg: string) => {
-        const match = svg.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
-        const viewBoxMatch = svg.match(/viewBox="([^"]+)"/i);
-        const viewBox = viewBoxMatch ? viewBoxMatch[1] : `0 0 ${ICON_SIZE} ${ICON_SIZE}`;
-        // 保留原始svg的viewBox和内容
-        return {
-            svgContent: match ? match[0] : svg,
-            viewBox,
-        };
+    // 保留原始<svg>内容，移除width/height属性，避免缩放失真
+    const stripSizeAttrs = (svg: string) => {
+        return svg
+          .replace(/(<svg[^>]*)\swidth="[^"]*"/i, '$1')
+          .replace(/(<svg[^>]*)\sheight="[^"]*"/i, '$1');
     };
 
     const iconGroup = icons.map((svg, index) => {
@@ -23,13 +26,7 @@ export const generateSVG = (icons: string[], perLine: number = 15) => {
         const row = Math.floor(index / perLine);
         const x = col * (ICON_SIZE + GAP);
         const y = row * ICON_SIZE;
-        // 拼接时包一层<g>定位，里面仍然是完整<svg ...>...</svg>
-        const { svgContent } = extractSVG(svg);
-        // 替换svg的width/height属性以适配主SVG的格子
-        const fixedSVG = svgContent
-            .replace(/<svg([^>]*)width="[^"]*"([^>]*)/i, `<svg$1width="${ICON_SIZE}"$2`)
-            .replace(/<svg([^>]*)height="[^"]*"([^>]*)/i, `<svg$1height="${ICON_SIZE}"$2`);
-        return `<g transform="translate(${x}, ${y})">${fixedSVG}</g>`;
+        return `<g transform="translate(${x}, ${y})">${stripSizeAttrs(svg)}</g>`;
     }).join('\n');
 
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"
