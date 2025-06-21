@@ -119,9 +119,9 @@ router.get("/icons", async (req: Request, res: Response) => {
                   .replace(/<switch[\s\S]*?<\/switch>\s*/gi, '')             // 移除 <switch>...</switch>
                   .replace(/<foreignObject[\s\S]*?<\/foreignObject>\s*/gi, '') // 移除 <foreignObject>...</foreignObject>
                   .replace(/<!ENTITY[\s\S]*?>\s*/g, '')                     // 移除 ENTITY 声明
+                  .replace(/xmlns:[a-zA-Z0-9]+="&[a-zA-Z0-9_]+;"/g, '')     // 清除所有类似 xmlns:x="&ns_extend;" 这种带实体引用的命名空间声明
                   .replace(/^\uFEFF/, '')                                   // 移除 BOM
                   .replace(/^\s+/, '');                                     // 移除开头空白
-                content = content.replace(/^\uFEFF/, '').replace(/^\s+/, '');
                 let radiusValue = Number(radius);
                 if (isNaN(radiusValue) || radiusValue < minRadius) {
                     radiusValue = minRadius
