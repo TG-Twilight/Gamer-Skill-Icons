@@ -96,7 +96,7 @@ Object.entries(shortNames).forEach(([short, full]) => {
     shortNamesReverse[full].push(short);
 });
 
-// 清洗SVG：去掉xml声明、doctype、entity、metadata、switch、foreignObject、命名空间引用、i:前缀标签/属性等
+// 仅清理 SVG 文件头部的杂质，不移除图形内容
 function cleanSVG(svg: string): string {
     return svg
         .replace(/<\?xml[\s\S]*?\?>\s*/g, '')
@@ -116,25 +116,23 @@ function cleanSVG(svg: string): string {
         .replace(/^\s+/, '');
 }
 
-// 提取svg内容（去掉<svg ...>和</svg>）
+// 只去除 <svg ...> 和 </svg> 标签本身，保留里面的内容
 function extractSvgContent(svg: string): string {
-    return svg.replace(/^<svg[^>]*>/i, '').replace(/<\/svg>\s*$/i, '');
+    return svg.replace(/^<svg[^>]*?>/i, '').replace(/<\/svg>\s*$/i, '');
 }
 
-// 拼接多个SVG到一个SVG（每个图标用g标签包裹并平铺）
+// 拼接多个 SVG 图标为一个大 SVG
 function generateSVG(icons: string[], perline = 0) {
     const groupWidth = 300;
     const groupHeight = 256;
     let svgGroups = '';
     if (perline && perline > 0) {
-        // 多行排列
         for (let i = 0; i < icons.length; i++) {
             const x = (i % perline) * groupWidth;
             const y = Math.floor(i / perline) * groupHeight;
             svgGroups += `<g transform="translate(${x}, ${y})">\n${extractSvgContent(icons[i])}\n</g>\n`;
         }
     } else {
-        // 横向一行排列
         for (let i = 0; i < icons.length; i++) {
             const x = i * groupWidth;
             svgGroups += `<g transform="translate(${x}, 0)">\n${extractSvgContent(icons[i])}\n</g>\n`;
@@ -166,7 +164,7 @@ router.get("/icons", async (req: Request, res: Response) => {
                 } else if (radiusValue > maxRadius) {
                     radiusValue = maxRadius;
                 }
-                // 替换<rect ... rx="xxx"...>
+                // 替换 <rect ... rx="xxx"...>
                 content = content.replace(/<rect([^>]*)rx="(\d+)"/, (match, before) => {
                     return `<rect${before}rx="${radiusValue}"`;
                 });
@@ -182,12 +180,12 @@ router.get("/icons", async (req: Request, res: Response) => {
                 hint: "Hmm... There's no valid icon."
             });
         } else if (icons.length === 1) {
-            // 只返回单个SVG
+            // 单个图标，直接返回 SVG
             res.setHeader("Content-Type", "image/svg+xml");
             return res.status(200).send(icons[0]);
         } else {
-            // 多个SVG拼接
-            let response;
+            // 多个图标，拼接为一个 SVG
+            let response: string;
             if (perline !== undefined) {
                 const perlineNumber = Number(perline);
                 if (!isNaN(perlineNumber) && perlineNumber > 0 && perlineNumber <= 15) {
@@ -202,6 +200,7 @@ router.get("/icons", async (req: Request, res: Response) => {
             return res.status(200).send(response);
         }
     } else {
+        // 不带参数，列出所有图标
         try {
             const files = await fs.readdir(iconsDir);
             const icons = files
