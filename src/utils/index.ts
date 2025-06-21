@@ -1,34 +1,33 @@
-export const generateSVG = (icons: string[], perLine: number = 15) => {
-    // 取所有icons的viewBox，假定都一样
-    const getViewBox = (svg: string) => {
-        const match = svg.match(/viewBox="([\d.\s-]+)"/i);
-        return match ? match[1].split(/\s+/).map(Number) : [0,0,350,350];
-    };
-    const [vx, vy, vw, vh] = getViewBox(icons[0]);
-    const ICON_SIZE = Math.max(vw, vh); // 350
+export const generateSVG = (
+    icons: string[],
+    perLine: number = 15,
+) => {
+    const ICON_SIZE = 48;
+    const viewBoxSize = 256; // 子SVG的viewBox宽高
+    const scale = ICON_SIZE / viewBoxSize;
+
     const cols = Math.min(perLine, icons.length);
     const rows = Math.ceil(icons.length / perLine);
     const width = cols * ICON_SIZE;
     const height = rows * ICON_SIZE;
 
-    const extractInner = (svg: string) => {
-        // 提取<g>内容
-        const match = svg.match(/<g[^>]*>([\s\S]*?)<\/g>/i);
-        return match ? match[1] : svg;
-    };
+    const stripSizeAttrs = (svg: string) =>
+        svg.replace(/(<svg[^>]*)\swidth="[^"]*"/i, '$1')
+           .replace(/(<svg[^>]*)\sheight="[^"]*"/i, '$1');
 
     const iconGroup = icons.map((svg, index) => {
-        const [vx, vy, vw, vh] = getViewBox(svg);
-        const scale = ICON_SIZE / Math.max(vw, vh);
-        // 使内容居中
-        const offsetX = (ICON_SIZE - vw * scale) / 2;
-        const offsetY = (ICON_SIZE - vh * scale) / 2;
         const x = (index % perLine) * ICON_SIZE;
         const y = Math.floor(index / perLine) * ICON_SIZE;
-        return `<g transform="translate(${x + offsetX}, ${y + offsetY}) scale(${scale}) translate(${-vx},${-vy})">${extractInner(svg)}</g>`;
+        // scale到48x48，左上对齐
+        return `
+            <g transform="translate(${x},${y}) scale(${scale})">
+                ${stripSizeAttrs(svg)}
+            </g>
+        `;
     }).join('\n');
 
-    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"
+        xmlns="http://www.w3.org/2000/svg">
         ${iconGroup}
     </svg>`;
 };
