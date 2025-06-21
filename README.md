@@ -27,7 +27,6 @@ GET /icons?i=fuze
 
 Example: 
 <p> 
-![ash](./icons/fuze.svg )
   <img src="./icons/fuze.svg" width="672"/>
 </p>
 
