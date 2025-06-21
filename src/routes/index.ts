@@ -133,11 +133,20 @@ router.get("/icons", async (req: Request, res: Response) => {
                 hint: "Hmm... There's no valid icon."
             });
         }
-        // 关键判断：单图标时直接返回原 SVG 内容
-        if (icons.length === 1) {
-            res.setHeader("Content-Type", "image/svg+xml");
-            return res.status(200).send(icons[0]);
-        }
+                // 单个和多个都走 generateSVG，保证缩放和效果一致
+                let response;
+                if (perline !== undefined) {
+                    const perlineNumber = Number(perline);
+                    if (!isNaN(perlineNumber) && perlineNumber > 0 && perlineNumber <= 15) {
+                        response = generateSVG(icons, perlineNumber);
+                    } else {
+                        response = generateSVG(icons);
+                    }
+                } else {
+                    response = generateSVG(icons);
+                }
+                res.setHeader("Content-Type", "image/svg+xml");
+                return res.status(200).send(response);
         // 多图标时拼接
         let response;
         if (perline !== undefined) {
