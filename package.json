@@ -1,5 +1,5 @@
 {
-    "name": "skills-icons",
+    "name": "R6-Operators-Icons",
     "private": true,
     "main": "dist/index.js",
     "scripts": {
@@ -21,6 +21,6 @@
         "@vercel/node": "^5.0.0",
         "tsx": "^4.7.0"
     },
-    "author": "syvixor",
+    "author": "TG-Twilight",
     "license": "MIT"
 }
