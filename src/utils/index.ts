@@ -4,7 +4,7 @@ export const generateSVG = (icons: string[], perLine: number = 15) => {
         const match = svg.match(/viewBox="([\d.\s-]+)"/i);
         return match ? match[1].split(/\s+/).map(Number) : [0,0,350,350];
     };
-    const ICON_SIZE = 256; // 固定每个icon格子为256
+    const ICON_SIZE = 128; // 在这里调整大小
     const cols = Math.min(perLine, icons.length);
     const rows = Math.ceil(icons.length / perLine);
     const width = cols * ICON_SIZE;
