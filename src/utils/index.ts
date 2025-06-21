@@ -5,13 +5,12 @@ export const generateSVG = (icons: string[], perLine: number = 15) => {
     const width = cols * ICON_SIZE;
     const height = rows * ICON_SIZE;
 
-    // 只提取 <svg ...>...</svg> 的内容
+    // 只提取 <g>...</g>，忽略 <switch>/<foreignObject>
     const extractInner = (svg: string) => {
-        const match = svg.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
-        return match ? match[1] : svg;
+        const gMatch = svg.match(/<g[^>]*>([\s\S]*?)<\/g>/i);
+        return gMatch ? `<g>${gMatch[1]}</g>` : svg;
     };
 
-    // 拼接：每个icon内容包一层<g>，放到对应格子
     const iconGroup = icons.map((svg, index) => {
         const x = (index % perLine) * ICON_SIZE;
         const y = Math.floor(index / perLine) * ICON_SIZE;
