@@ -116,153 +116,59 @@ function cleanSVG(svg: string): string {
         .replace(/^\s+/, '');
 }
 
-// 只去除 <svg ...> 和 </svg> 标签本身，保留里面的内容
+// 只去掉 <svg ...> 和 </svg>，保留内容
 function extractSvgContent(svg: string): string {
     return svg.replace(/^<svg[^>]*?>/i, '').replace(/<\/svg>\s*$/i, '');
-}
-
-// 拼接多个 SVG 图标为一个大 SVG
-function generateSVG(icons: string[], perline = 0) {
-    const groupWidth = 300;
-    const groupHeight = 256;
-    let svgGroups = '';
-    if (perline && perline > 0) {
-        for (let i = 0; i < icons.length; i++) {
-            const x = (i % perline) * groupWidth;
-            const y = Math.floor(i / perline) * groupHeight;
-            svgGroups += `<g transform="translate(${x}, ${y})">\n${extractSvgContent(icons[i])}\n</g>\n`;
-        }
-    } else {
-        for (let i = 0; i < icons.length; i++) {
-            const x = i * groupWidth;
-            svgGroups += `<g transform="translate(${x}, 0)">\n${extractSvgContent(icons[i])}\n</g>\n`;
-        }
-    }
-    const width = perline && perline > 0 ? groupWidth * Math.min(perline, icons.length) : groupWidth * icons.length;
-    const height = perline && perline > 0 ? groupHeight * Math.ceil(icons.length / perline) : groupHeight;
-    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">\n${svgGroups}</svg>`;
 }
 
 router.get("/icons", async (req: Request, res: Response) => {
     const { i, perline, radius = "25" } = req.query;
     const iconsDir = path.join(__dirname, "../../icons");
-    const minRadius = 0;
-    const maxRadius = 100;
-
     if (i && typeof i === "string") {
         const iconsList = i.split(",");
-        const fullIconsList = iconsList.map(icon => shortNames[icon.trim()] || icon.trim());
         const icons: string[] = [];
-        for (const icon of fullIconsList) {
+        for (const icon of iconsList) {
             const iconPath = path.join(iconsDir, `${icon.trim()}.svg`);
             try {
                 let content = await fs.readFile(iconPath, "utf-8");
                 content = cleanSVG(content);
-                let radiusValue = Number(radius);
-                if (isNaN(radiusValue) || radiusValue < minRadius) {
-                    radiusValue = minRadius;
-                } else if (radiusValue > maxRadius) {
-                    radiusValue = maxRadius;
-                }
-                // 替换 <rect ... rx="xxx"...>
-                content = content.replace(/<rect([^>]*)rx="(\d+)"/, (match, before) => {
-                    return `<rect${before}rx="${radiusValue}"`;
-                });
+
+                // 仅为调试：打印内容确认中间没被清空
+                console.log("=== 清洗后SVG内容 ===\n", content);
+
                 icons.push(content);
             } catch (error) {
-                console.error(`Icon isn't valid → ${icon}`);
+                console.error(`Icon isn't valid → ${iconPath}`, error);
             }
         }
         if (icons.length === 0) {
-            return res.status(404).json({
-                status: res.statusCode,
-                message: "Not Found!",
-                hint: "Hmm... There's no valid icon."
-            });
+            return res.status(404).json({ message: "No valid icon." });
         } else if (icons.length === 1) {
-            // 单个图标，直接返回 SVG
             res.setHeader("Content-Type", "image/svg+xml");
             return res.status(200).send(icons[0]);
         } else {
-            // 多个图标，拼接为一个 SVG
-            let response: string;
-            if (perline !== undefined) {
-                const perlineNumber = Number(perline);
-                if (!isNaN(perlineNumber) && perlineNumber > 0 && perlineNumber <= 15) {
-                    response = generateSVG(icons, perlineNumber);
-                } else {
-                    response = generateSVG(icons);
-                }
-            } else {
-                response = generateSVG(icons);
+            // 多个SVG拼接
+            const groupWidth = 300, groupHeight = 256;
+            let svgGroups = '';
+            for (let i = 0; i < icons.length; i++) {
+                const x = i * groupWidth;
+                svgGroups += `<g transform="translate(${x}, 0)">\n${extractSvgContent(icons[i])}\n</g>\n`;
             }
+            const width = groupWidth * icons.length;
+            const height = groupHeight;
+            const response = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">\n${svgGroups}</svg>`;
             res.setHeader("Content-Type", "image/svg+xml");
             return res.status(200).send(response);
         }
     } else {
-        // 不带参数，列出所有图标
+        // 列出所有图标
         try {
             const files = await fs.readdir(iconsDir);
-            const icons = files
-                .filter(file => file.endsWith(".svg"))
-                .map(file => path.basename(file, ".svg"));
-
-            return res.status(200).json({
-                status: res.statusCode,
-                icons
-            });
+            const icons = files.filter(file => file.endsWith(".svg")).map(file => path.basename(file, ".svg"));
+            return res.status(200).json({ icons });
         } catch (error) {
-            res.status(500).json({
-                status: res.statusCode,
-                message: "Internal Server Error!"
-            });
+            res.status(500).json({ message: "Internal Server Error!" });
         }
-    }
-});
-
-router.get("/readme", async (_req: Request, res: Response) => {
-    const iconsDir = path.join(__dirname, "../../icons");
-    try {
-        const files = await fs.readdir(iconsDir);
-        const svgs = files.filter(file => file.endsWith(".svg"));
-
-        const totalIcons = svgs.length;
-        const halfTotal = Math.ceil(totalIcons / 2);
-
-        const firstHalf = svgs.slice(0, halfTotal);
-        const secondHalf = svgs.slice(halfTotal);
-
-        let table = "| ID | Icon | Alias | ID | Icon | Alias |\n";
-        table += "|----|------|-------|----|------|-------|\n";
-
-        for (let i = 0; i < halfTotal; i++) {
-            const leftSide = firstHalf[i];
-            const rightSide = secondHalf[i];
-
-            const leftId = leftSide.replace(".svg", "");
-            const leftAlias = shortNamesReverse[leftId] ?
-                `\`${shortNamesReverse[leftId].join(", ")}\`` : "-";
-            let row = `| \`${leftId}\` | <img src="./icons/${leftId}.svg" width="48" /> | ${leftAlias}`;
-
-            if (rightSide) {
-                const rightId = rightSide.replace(".svg", "");
-                const rightAlias = shortNamesReverse[rightId] ?
-                    `\`${shortNamesReverse[rightId].join(", ")}\`` : "-";
-                row += ` | \`${rightId}\` | <img src="./icons/${rightId}.svg" width="48" /> | ${rightAlias}`;
-            } else {
-                row += ` | | | `;
-            }
-
-            table += row + "|\n";
-        }
-
-        res.setHeader("Content-Type", "text/markdown");
-        return res.status(200).send(table);
-    } catch (error) {
-        res.status(500).json({
-            status: res.statusCode,
-            message: "Internal Server Error!"
-        });
     }
 });
 
