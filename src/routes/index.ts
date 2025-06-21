@@ -3,8 +3,6 @@ import type { Router, Request, Response } from "express";
 import path from "path";
 import fs from "fs/promises";
 
-import { generateSVG } from "../utils";
-
 const router: Router = express.Router();
 
 const shortNames: Record<string, string> = {
@@ -88,7 +86,7 @@ const shortNames: Record<string, string> = {
     "ying": "ying",
     "zero": "zero",
     "zofia": "zofia",
-}
+};
 
 const shortNamesReverse: Record<string, string[]> = {};
 Object.entries(shortNames).forEach(([short, full]) => {
@@ -98,11 +96,61 @@ Object.entries(shortNames).forEach(([short, full]) => {
     shortNamesReverse[full].push(short);
 });
 
+// 清洗SVG：去掉xml声明、doctype、entity、metadata、switch、foreignObject、命名空间引用、i:前缀标签/属性等
+function cleanSVG(svg: string): string {
+    return svg
+        .replace(/<\?xml[\s\S]*?\?>\s*/g, '')
+        .replace(/<!DOCTYPE[\s\S]*?\]>\s*/g, '')
+        .replace(/<!DOCTYPE[\s\S]*?>\s*/g, '')
+        .replace(/<metadata[\s\S]*?<\/metadata>\s*/gi, '')
+        .replace(/<switch[\s\S]*?<\/switch>\s*/gi, '')
+        .replace(/<foreignObject[\s\S]*?<\/foreignObject>\s*/gi, '')
+        .replace(/<!ENTITY[\s\S]*?>\s*/g, '')
+        .replace(/xmlns:[a-zA-Z0-9]+="&[a-zA-Z0-9_]+;"/g, '')
+        .replace(/<i:[^>]+>[\s\S]*?<\/i:[^>]+>/g, '')
+        .replace(/<i:[^/>]+\/>/g, '')
+        .replace(/ i:[a-zA-Z0-9:-]+="[^"]*"/g, '')
+        .replace(/ i:[a-zA-Z0-9:-]+='[^']*'/g, '')
+        .replace(/ i:[a-zA-Z0-9:-]+\b/g, '')
+        .replace(/^\uFEFF/, '')
+        .replace(/^\s+/, '');
+}
+
+// 提取svg内容（去掉<svg ...>和</svg>）
+function extractSvgContent(svg: string): string {
+    return svg.replace(/^<svg[^>]*>/i, '').replace(/<\/svg>\s*$/i, '');
+}
+
+// 拼接多个SVG到一个SVG（每个图标用g标签包裹并平铺）
+function generateSVG(icons: string[], perline = 0) {
+    const groupWidth = 300;
+    const groupHeight = 256;
+    let svgGroups = '';
+    if (perline && perline > 0) {
+        // 多行排列
+        for (let i = 0; i < icons.length; i++) {
+            const x = (i % perline) * groupWidth;
+            const y = Math.floor(i / perline) * groupHeight;
+            svgGroups += `<g transform="translate(${x}, ${y})">\n${extractSvgContent(icons[i])}\n</g>\n`;
+        }
+    } else {
+        // 横向一行排列
+        for (let i = 0; i < icons.length; i++) {
+            const x = i * groupWidth;
+            svgGroups += `<g transform="translate(${x}, 0)">\n${extractSvgContent(icons[i])}\n</g>\n`;
+        }
+    }
+    const width = perline && perline > 0 ? groupWidth * Math.min(perline, icons.length) : groupWidth * icons.length;
+    const height = perline && perline > 0 ? groupHeight * Math.ceil(icons.length / perline) : groupHeight;
+    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">\n${svgGroups}</svg>`;
+}
+
 router.get("/icons", async (req: Request, res: Response) => {
-    const { i, perline, radius="25" } = req.query;
+    const { i, perline, radius = "25" } = req.query;
     const iconsDir = path.join(__dirname, "../../icons");
-    const minRadius = 0
-    const maxRadius = 100
+    const minRadius = 0;
+    const maxRadius = 100;
+
     if (i && typeof i === "string") {
         const iconsList = i.split(",");
         const fullIconsList = iconsList.map(icon => shortNames[icon.trim()] || icon.trim());
@@ -111,30 +159,16 @@ router.get("/icons", async (req: Request, res: Response) => {
             const iconPath = path.join(iconsDir, `${icon.trim()}.svg`);
             try {
                 let content = await fs.readFile(iconPath, "utf-8");
-                content = content
-                  .replace(/<\?xml[\s\S]*?\?>\s*/g, '')                     // 移除 <?xml ... ?>
-                  .replace(/<!DOCTYPE[\s\S]*?\]>\s*/g, '')                  // 移除 <!DOCTYPE ... ]>
-                  .replace(/<!DOCTYPE[\s\S]*?>\s*/g, '')                    // 移除 <!DOCTYPE ... >
-                  .replace(/<metadata[\s\S]*?<\/metadata>\s*/gi, '')         // 移除 <metadata>...</metadata>
-                  .replace(/<switch[\s\S]*?<\/switch>\s*/gi, '')             // 移除 <switch>...</switch>
-                  .replace(/<foreignObject[\s\S]*?<\/foreignObject>\s*/gi, '') // 移除 <foreignObject>...</foreignObject>
-                  .replace(/<!ENTITY[\s\S]*?>\s*/g, '')                     // 移除 ENTITY 声明
-                  .replace(/xmlns:[a-zA-Z0-9]+="&[a-zA-Z0-9_]+;"/g, '')     // 清除所有类似 xmlns:x="&ns_extend;" 这种带实体引用的命名空间声明
-                  .replace(/^\uFEFF/, '')                                   // 移除 BOM
-                  .replace(/<i:[^>]+>[\s\S]*?<\/i:[^>]+>/g, '')             // 移除所有 <i:xxx>...</i:xxx> 标签
-                  .replace(/<i:[^/>]+\/>/g, '')                             // 移除所有自闭合 <i:xxx ... /> 标签
-                  .replace(/ i:[a-zA-Z0-9:-]+="[^"]*"/g, '')                // 移除属性中的 i:xxx="..."
-                  .replace(/ i:[a-zA-Z0-9:-]+='[^']*'/g, '')                // 移除属性中的 i:xxx='...'
-                  .replace(/ i:[a-zA-Z0-9:-]+\b/g, '')                      // 移除没有值的 i:xxx 属性
-                  .replace(/^\s+/, '');                                     // 移除开头空白
+                content = cleanSVG(content);
                 let radiusValue = Number(radius);
                 if (isNaN(radiusValue) || radiusValue < minRadius) {
-                    radiusValue = minRadius
+                    radiusValue = minRadius;
                 } else if (radiusValue > maxRadius) {
-                    radiusValue = maxRadius
+                    radiusValue = maxRadius;
                 }
+                // 替换<rect ... rx="xxx"...>
                 content = content.replace(/<rect([^>]*)rx="(\d+)"/, (match, before) => {
-                    return `<rect${before}rx="${radiusValue}"`
+                    return `<rect${before}rx="${radiusValue}"`;
                 });
                 icons.push(content);
             } catch (error) {
@@ -147,7 +181,12 @@ router.get("/icons", async (req: Request, res: Response) => {
                 message: "Not Found!",
                 hint: "Hmm... There's no valid icon."
             });
+        } else if (icons.length === 1) {
+            // 只返回单个SVG
+            res.setHeader("Content-Type", "image/svg+xml");
+            return res.status(200).send(icons[0]);
         } else {
+            // 多个SVG拼接
             let response;
             if (perline !== undefined) {
                 const perlineNumber = Number(perline);
