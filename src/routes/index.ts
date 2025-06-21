@@ -133,12 +133,7 @@ router.get("/icons", async (req: Request, res: Response) => {
                 hint: "Hmm... There's no valid icon."
             });
         }
-        // 关键判断：单图标时直接返回原 SVG 内容
-        if (icons.length === 1) {
-            res.setHeader("Content-Type", "image/svg+xml");
-            return res.status(200).send(icons[0]);
-        }
-        // 多图标时拼接
+        // 统一拼接输出，无论单个还是多个
         let response;
         if (perline !== undefined) {
             const perlineNumber = Number(perline);
