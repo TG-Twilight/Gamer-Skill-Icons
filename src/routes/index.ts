@@ -111,6 +111,7 @@ router.get("/icons", async (req: Request, res: Response) => {
             const iconPath = path.join(iconsDir, `${icon.trim()}.svg`);
             try {
                 let content = await fs.readFile(iconPath, "utf-8");
+                content = content.replace(/^\uFEFF/, '').replace(/^\s+/, '');
                 let radiusValue = Number(radius);
                 if (isNaN(radiusValue) || radiusValue < minRadius) {
                     radiusValue = minRadius
