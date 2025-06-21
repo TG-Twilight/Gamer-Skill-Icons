@@ -96,7 +96,7 @@ Object.entries(shortNames).forEach(([short, full]) => {
     shortNamesReverse[full].push(short);
 });
 
-// 清理SVG头部杂质，不动任何 <g> <rect> <path> <switch>...
+// 清理SVG头部杂质
 function cleanSVG(svg: string): string {
     return svg
         .replace(/<\?xml[\s\S]*?\?>\s*/g, '')
@@ -113,6 +113,18 @@ function cleanSVG(svg: string): string {
         .replace(/^\s+/, '');
 }
 
+// 提取 <defs> 和 <style> 内容
+function extractDefsAndStyles(svg: string): string[] {
+    const result: string[] = [];
+    // defs
+    const defsMatches = svg.match(/<defs[\s\S]*?<\/defs>/gi);
+    if (defsMatches) result.push(...defsMatches);
+    // style
+    const styleMatches = svg.match(/<style[\s\S]*?<\/style>/gi);
+    if (styleMatches) result.push(...styleMatches);
+    return result;
+}
+
 // 只提取 <switch> 里的 <g>...</g>，否则取第一个 <g>
 function extractIconContent(svg: string): string {
     // 去掉 <svg> 包裹
@@ -120,7 +132,6 @@ function extractIconContent(svg: string): string {
     // 如果有 <switch>，取 <switch> 里第一个 <g>...</g>
     const switchMatch = inner.match(/<switch[\s\S]*?<\/switch>/i);
     if (switchMatch) {
-        // 在 <switch> 里找 <g>...</g>
         const gMatch = switchMatch[0].match(/<g[^>]*>[\s\S]*<\/g>/i);
         if (gMatch) return gMatch[0];
     }
@@ -129,8 +140,15 @@ function extractIconContent(svg: string): string {
     return gMatch ? gMatch[0] : inner;
 }
 
-// 拼接多个SVG图标为一个大SVG（只拼内容，不嵌套switch/foreignObject）
-function generateSVG(icons: string[], perline = 0) {
+// 合并所有 defs/style，去重
+function mergeDefsAndStyles(defsArr: string[]): string {
+    // 粗暴去重
+    const unique = Array.from(new Set(defsArr));
+    return unique.join('\n');
+}
+
+// 拼接多个SVG图标为一个大SVG（合并所有 <defs>/<style> 到顶层，拼所有 <g> 内容）
+function generateSVG(icons: string[], perline = 0, defsArr: string[] = []) {
     const groupWidth = 300;
     const groupHeight = 256;
     let svgGroups = '';
@@ -138,17 +156,28 @@ function generateSVG(icons: string[], perline = 0) {
         for (let i = 0; i < icons.length; i++) {
             const x = (i % perline) * groupWidth;
             const y = Math.floor(i / perline) * groupHeight;
-            svgGroups += `<g transform="translate(${x}, ${y})">\n${extractIconContent(icons[i])}\n</g>\n`;
+            const content = extractIconContent(icons[i]);
+            if (/^<g[\s>]/i.test(content.trim())) {
+                svgGroups += content.replace(/^<g/i, `<g transform="translate(${x},${y})"`);
+            } else {
+                svgGroups += `<g transform="translate(${x},${y})">${content}</g>`;
+            }
         }
     } else {
         for (let i = 0; i < icons.length; i++) {
             const x = i * groupWidth;
-            svgGroups += `<g transform="translate(${x}, 0)">\n${extractIconContent(icons[i])}\n</g>\n`;
+            const content = extractIconContent(icons[i]);
+            if (/^<g[\s>]/i.test(content.trim())) {
+                svgGroups += content.replace(/^<g/i, `<g transform="translate(${x},0)"`);
+            } else {
+                svgGroups += `<g transform="translate(${x},0)">${content}</g>`;
+            }
         }
     }
     const width = perline && perline > 0 ? groupWidth * Math.min(perline, icons.length) : groupWidth * icons.length;
     const height = perline && perline > 0 ? groupHeight * Math.ceil(icons.length / perline) : groupHeight;
-    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">\n${svgGroups}</svg>`;
+    const defsAndStyles = mergeDefsAndStyles(defsArr);
+    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">\n${defsAndStyles}\n${svgGroups}</svg>`;
 }
 
 router.get("/icons", async (req: Request, res: Response) => {
@@ -160,6 +189,7 @@ router.get("/icons", async (req: Request, res: Response) => {
         const iconsList = i.split(",");
         const fullIconsList = iconsList.map(icon => shortNames[icon.trim()] || icon.trim());
         const icons: string[] = [];
+        const defsArr: string[] = [];
         for (const icon of fullIconsList) {
             const iconPath = path.join(iconsDir, `${icon.trim()}.svg`);
             try {
@@ -176,6 +206,10 @@ router.get("/icons", async (req: Request, res: Response) => {
                     return `<rect${before}rx="${radiusValue}"`;
                 });
                 icons.push(content);
+
+                // 合并defs/style
+                const defsStyles = extractDefsAndStyles(content);
+                defsArr.push(...defsStyles);
             } catch (error) {
                 console.error(`Icon isn't valid → ${icon}`);
             }
@@ -187,21 +221,21 @@ router.get("/icons", async (req: Request, res: Response) => {
                 hint: "Hmm... There's no valid icon."
             });
         } else if (icons.length === 1) {
-            // 单个图标，直接返回SVG（注意不再extractIconContent，直接原内容）
+            // 单个图标，直接返回SVG
             res.setHeader("Content-Type", "image/svg+xml");
             return res.status(200).send(cleanSVG(icons[0]));
         } else {
-            // 多个图标拼为一个SVG（只拼 <g> 内容）
+            // 多个图标拼为一个SVG（合并defs和style）
             let response: string;
             if (perline !== undefined) {
                 const perlineNumber = Number(perline);
                 if (!isNaN(perlineNumber) && perlineNumber > 0 && perlineNumber <= 15) {
-                    response = generateSVG(icons, perlineNumber);
+                    response = generateSVG(icons, perlineNumber, defsArr);
                 } else {
-                    response = generateSVG(icons);
+                    response = generateSVG(icons, 0, defsArr);
                 }
             } else {
-                response = generateSVG(icons);
+                response = generateSVG(icons, 0, defsArr);
             }
             res.setHeader("Content-Type", "image/svg+xml");
             return res.status(200).send(response);
