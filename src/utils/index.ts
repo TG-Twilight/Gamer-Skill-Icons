@@ -29,12 +29,17 @@ export const generateSVG = (icons: string[], perLine: number = 15) => {
         };
     };
 
-    // 拼接，每个icon包一层svg，自动由浏览器缩放
+    // 拼接，每个icon用<g>，内容缩放、左上角对齐
     const iconGroup = icons.map((svg, index) => {
         const x = (index % perLine) * ICON_SIZE;
         const y = Math.floor(index / perLine) * ICON_SIZE;
         const { viewBox, content } = extractSVG(svg);
-        return `<svg x="${x}" y="${y}" width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg">${content}</svg>`;
+        const [vx, vy, vw, vh] = viewBox.split(/\s+/).map(Number);
+        // 计算缩放和位移（填满格子，左上为0,0）
+        const scale = Math.min(ICON_SIZE / vw, ICON_SIZE / vh);
+        const dx = -vx * scale;
+        const dy = -vy * scale;
+        return `<g transform="translate(${x},${y}) scale(${scale}) translate(${dx},${dy})">${content}</g>`;
     }).join("\n");
 
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" 
