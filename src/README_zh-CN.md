@@ -1,10 +1,23 @@
 <div align="left">
-<a href="./src/README_zh-CN.md">中文</a>&nbsp;|&nbsp;
-<a href="./README.md">English</a> &nbsp;|&nbsp;
-<a href="https://zyc.su/">作者博客</a> 
+<a href="./src/README_zh-CN.md">
+  <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-blue?style=for-the-badge&logo=readme&logoColor=white" alt="中文"/>
+</a>&nbsp;|&nbsp;
+<a href="./README.md">
+  <img src="https://img.shields.io/badge/English-green?style=for-the-badge&logo=readme&logoColor=white" alt="English"/>
+</a>&nbsp;|&nbsp;
+<a href="https://zyc.su/" target="_blank">
+  <img src="https://img.shields.io/badge/%E4%BD%9C%E8%80%85%E5%8D%9A%E5%AE%A2-orange?style=for-the-badge&logo=firefox-browser&logoColor=white" alt="作者博客"/>
+</a>&nbsp;|&nbsp;
+<a href="https://afdian.com/a/AdsRule" target="_blank">
+  <img src="https://img.shields.io/badge/%E8%B5%9E%E5%8A%A9%E6%88%91-ffd700?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white&labelColor=ff9800" alt="赞助我"/>
+</a>
 </div>
 
 # 🍁R6 Operators Icons 彩虹六号干员图标
+<p align="center">
+   <img src="https://raw.githubusercontent.com/TG-Twilight/R6-Operators-Icons/refs/heads/main/src/banner.webp">
+</p>
+
 
 [![GitHub stars](https://img.shields.io/github/stars/TG-Twilight/R6-Operators-Icons)](https://github.com/TG-Twilight/R6-Operators-Icons/stargazers)
 [![GitHub license](https://img.shields.io/github/license/TG-Twilight/R6-Operators-Icons)](./LICENSE)
