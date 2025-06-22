@@ -1,38 +1,43 @@
-# R6 Operators Icons
+<div align="left">
+<a href="./src/README_zh-CN.md">中文</a>&nbsp;|&nbsp;
+<a href="./README.md">English</a> &nbsp;|&nbsp;
+<a href="https://zyc.su/">Author Blog</a> 
+</div>
+
+# 🍁R6 Operators Icons
 
 [![GitHub stars](https://img.shields.io/github/stars/TG-Twilight/R6-Operators-Icons)](https://github.com/TG-Twilight/R6-Operators-Icons/stargazers)
 [![GitHub license](https://img.shields.io/github/license/TG-Twilight/R6-Operators-Icons)](./LICENSE)
 
-A simple API and static asset library that provides SVG icons for all Rainbow Six: Siege operators, suitable for web, bots, and creative projects.
+A public API and static asset library for Rainbow Six: Siege operator SVG icons, suitable for websites, bots, and creative projects.
+Now you can showcase your favorite or skilled R6 operators on your [personal blog](https://zyc.su) just like people display their “Skill” badges!
 
 ---
 
-## Features
+## 🍁Features
 
-- ⚡ **Simple API**: Get any operator icon as SVG by URL.
-- 🧩 **Batch Combine**: Combine multiple icons into a single SVG sprite.
-- 🎨 **Radius Customization**: Set border radius for rounded corners.
+- ⚡ **Simple API**: Get any operator SVG via URL.
+- 🧩 **Batch Sprite**: Combine multiple icons into a single SVG sprite.
 - 📦 **Self-hosted**: No external dependency required.
-- 🌏 **Multilingual**: Docs available in English and Chinese.
 
 ---
 
-## Usage
+## 🍁Usage
 
 ### 1. Get a single operator SVG
 
 ```url
-GET /icons?i=fuze
+GET /icons?i=ash
 ```
 
-Example: 
+Example:  
 <p> 
-  <img src="./icons/fuze.svg" width="672"/>
+  <img src="https://github.com/TG-Twilight/R6-Operators-Icons/blob/main/icons/fuze.svg" width="672"/>
 </p>
 
 ---
 
-### 2. Combine multiple icons in one SVG
+### 2. Combine multiple icons into a single SVG
 
 ```url
 GET /icons?i=ash,bandit,ace
@@ -40,14 +45,13 @@ GET /icons?i=ash,bandit,ace
 
 ---
 
-### 3. Customize icons per row and corner radius
+### 3. Customize icons per row
 
 ```url
 GET /icons?i=ash,bandit,ace&perline=2&radius=16
 ```
 
 - `perline`: Number of icons per row (default: 15, max: 15)
-- `radius`: Border radius for icon backgrounds (0~100, default: 25)
 
 ---
 
@@ -61,27 +65,27 @@ Returns a JSON list of all operator IDs.
 
 ---
 
-## Examples
+## 🍁Examples
 
-### Attacker Example (each icon 96×96)
+### Attackers (each icon 96×96)
 
-[https://r6-operators-icons.vercel.app/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash](https://r6-operators-icons.vercel.app/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash)
+[https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash](https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash)
 
 <p>
   <img src="https://r6-operators-icons.vercel.app/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
 </p>
 
-### Defender Example (each icon 96×96)
+### Defenders (each icon 96×96)
 
-[https://r6-operators-icons.vercel.app/api/icons?i=rrecruit_red,rook,kapkan,mute,smoke,jager,azami](https://r6-operators-icons.vercel.app/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami)
+[https://r6.zyc.su/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami](https://r6.zyc.su/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami)
 
 <p>
-  <img src="https://r6-operators-icons.vercel.app/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami" width="672"/>
+  <img src="https://r6.zyc.su/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami" width="672"/>
 </p>
 
 ---
 
-## Self-host
+## 🍁Self-host
 
 Clone and run:
 
@@ -97,30 +101,26 @@ API will be available at `http://localhost:3000/icons?...`
 
 ---
 
-## Directory Structure
+## 🍁Directory Structure
 
 ```
-/icons/         // All SVG files (one per operator)
+/icons/         // All SVG icon files
 /src/           // Source code (TypeScript)
-/src/utils/     // SVG combination logic
+/src/utils/     // SVG sprite logic
 /src/routes/    // Express API routes
 ```
 
 ---
 
-## Credits
+## 🍁Credits
 
-- Operator icons are taken from [@marcopixel/r6operators-website](https://github.com/marcopixel/r6operators-website)
-- Made a lot of modifications, but inspired by [@syvixor/skills-icons](https://github.com/syvixor/skills-icons)
+- Operator icons originally from [@marcopixel/r6operators-website](https://github.com/marcopixel/r6operators-website)
+- Many modifications and inspiration from [@syvixor/skills-icons](https://github.com/syvixor/skills-icons)
 
 ---
 
-## LICENSE
+## 🍁LICENSE
 
 MIT License © 2025-present [TG-Twilight](https://github.com/TG-Twilight)
 
 ---
-
-## 中文文档
-
-See [`README_zh-CN.md`](./src/README_zh-CN.md)
