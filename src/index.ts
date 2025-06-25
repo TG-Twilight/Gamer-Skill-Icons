@@ -40,7 +40,7 @@ api.get("/", async (_req: Request, res: Response) => {
         res.status(200).json({
             status: res.statusCode,
             message: "Total Icons → " + totalIcons,
-            github: "https://github.com/TG-Twilight/R6-Operators-Icons"
+            github: "你看起来没有调用任何图标，请访问：https://github.com/TG-Twilight/Gamer-Skill-Icons"
         });
     } catch (error) {
         res.status(500).json({
