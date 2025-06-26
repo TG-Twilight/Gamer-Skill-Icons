@@ -13,13 +13,13 @@
 </a>
 </div>
 
-# 🍁R6 Operators Icons
+# 🍁Gamer-Skill-Icons
 <p align="center">
    <img src="https://raw.githubusercontent.com/TG-Twilight/Gamer-Skill-Icons/refs/heads/main/src/banner.webp">
 </p>
 
-[![GitHub stars](https://img.shields.io/github/stars/TG-Twilight/R6-Operators-Icons)](https://github.com/TG-Twilight/R6-Operators-Icons/stargazers)
-[![GitHub license](https://img.shields.io/github/license/TG-Twilight/R6-Operators-Icons)](./LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/TG-Twilight/Gamer-Skill-Icons)](https://github.com/TG-Twilight/Gamer-Skill-Icons/stargazers)
+[![GitHub license](https://img.shields.io/github/license/TG-Twilight/Gamer-Skill-Icons)](./LICENSE)
 
 A public API and static asset library for Rainbow Six: Siege operator SVG icons, suitable for websites, bots, and creative projects.
 Now you can showcase your favorite or skilled R6 operators on your [personal blog](https://zyc.su) just like people display their “Skill” badges!
@@ -44,7 +44,7 @@ GET /icons?i=ash
 
 Example:  
 <p> 
-  <img src="https://github.com/TG-Twilight/R6-Operators-Icons/blob/main/icons/fuze.svg" width="672"/>
+  <img src="https://github.com/TG-Twilight/Gamer-Skill-Icons/blob/main/icons/fuze.svg" width="672"/>
 </p>
 
 ---
@@ -84,7 +84,7 @@ Returns a JSON list of all operator IDs.
 [https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash](https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash)
 
 <p>
-  <img src="https://r6-operators-icons.vercel.app/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
+  <img src="https://Gamer-Skill-Icons.vercel.app/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
 </p>
 
 ### Defenders (each icon 96×96)
@@ -102,8 +102,8 @@ Returns a JSON list of all operator IDs.
 Clone and run:
 
 ```bash
-git clone https://github.com/TG-Twilight/R6-Operators-Icons.git
-cd R6-Operators-Icons
+git clone https://github.com/TG-Twilight/Gamer-Skill-Icons.git
+cd Gamer-Skill-Icons
 npm install
 npm run build
 npm start
