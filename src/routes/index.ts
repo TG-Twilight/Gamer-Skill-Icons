@@ -2,26 +2,59 @@ import express from "express";
 import type { Router, Request, Response } from "express";
 import path from "path";
 import fs from "fs/promises";
-
 import { generateSVG } from "../utils";
-import shortNames from "./r6x/shortNames";
 
 const router: Router = express.Router();
 
-// 自动生成 shortNamesReverse
-const shortNamesReverse: Record<string, string[]> = {};
-Object.entries(shortNames).forEach(([short, full]) => {
-    if (!shortNamesReverse[full]) {
-        shortNamesReverse[full] = [];
+/** 动态获取所有游戏名（即 icons 目录下的所有文件夹） */
+async function getAllGames(): Promise<string[]> {
+    const iconsBaseDir = path.join(__dirname, "../../icons");
+    const entries = await fs.readdir(iconsBaseDir, { withFileTypes: true });
+    return entries.filter(e => e.isDirectory()).map(e => e.name);
+}
+
+/** 动态加载别名映射 shortNames */
+async function getShortNames(game: string): Promise<Record<string, string>> {
+    try {
+        // 注意路径需要兼容 ESModule/CommonJS，根据你的 tsconfig/module 设置
+        const mod = await import(`./${game}/shortNames`);
+        return mod.default || {};
+    } catch (err) {
+        // 没有对应 shortNames 文件就返回空对象
+        return {};
     }
-    shortNamesReverse[full].push(short);
+}
+
+/** 动态生成 shortNamesReverse */
+function getShortNamesReverse(shortNames: Record<string, string>): Record<string, string[]> {
+    const shortNamesReverse: Record<string, string[]> = {};
+    Object.entries(shortNames).forEach(([short, full]) => {
+        if (!shortNamesReverse[full]) {
+            shortNamesReverse[full] = [];
+        }
+        shortNamesReverse[full].push(short);
+    });
+    return shortNamesReverse;
+}
+
+// /games  列举所有游戏
+router.get("/games", async (_req, res) => {
+    const games = await getAllGames();
+    res.json({ games });
 });
 
+// /icons?game=R6X&i=xxx,yyy
 router.get("/icons", async (req: Request, res: Response) => {
-    const { i, perline, radius = "25" } = req.query;
-    const iconsDir = path.join(__dirname, "../../icons");
+    const { i, perline, radius = "25", game } = req.query;
+    const games = await getAllGames();
+    const gameStr = typeof game === "string" && games.includes(game) ? game : games[0]; // 默认第一个游戏
+    const iconsDir = path.join(__dirname, "../../icons", gameStr);
+
     const minRadius = 0;
     const maxRadius = 100;
+
+    const shortNames = await getShortNames(gameStr);
+
     if (i && typeof i === "string") {
         const iconsList = i.split(",");
         const fullIconsList = iconsList.map(icon => shortNames[icon.trim()] || icon.trim());
@@ -36,7 +69,6 @@ router.get("/icons", async (req: Request, res: Response) => {
                 } else if (radiusValue > maxRadius) {
                     radiusValue = maxRadius;
                 }
-                // 可选：仅在你的 SVG 的确存在 <rect ...rx="..."> 时才替换
                 content = content.replace(/<rect([^>]*)rx="(\d+)"/, (match, before) => {
                     return `<rect${before}rx="${radiusValue}"`;
                 });
@@ -52,7 +84,6 @@ router.get("/icons", async (req: Request, res: Response) => {
                 hint: "Hmm... There's no valid icon."
             });
         }
-        // 统一拼接输出，无论单个还是多个
         let response;
         if (perline !== undefined) {
             const perlineNumber = Number(perline);
@@ -67,7 +98,6 @@ router.get("/icons", async (req: Request, res: Response) => {
         res.setHeader("Content-Type", "image/svg+xml");
         return res.status(200).send(response);
     } else {
-        // 列出所有图标部分
         try {
             const files = await fs.readdir(iconsDir);
             const icons = files
@@ -87,8 +117,15 @@ router.get("/icons", async (req: Request, res: Response) => {
     }
 });
 
-router.get("/readme", async (_req: Request, res: Response) => {
-    const iconsDir = path.join(__dirname, "../../icons");
+// /readme?game=R6X
+router.get("/readme", async (req: Request, res: Response) => {
+    const { game } = req.query;
+    const games = await getAllGames();
+    const gameStr = typeof game === "string" && games.includes(game) ? game : games[0];
+    const iconsDir = path.join(__dirname, "../../icons", gameStr);
+    const shortNames = await getShortNames(gameStr);
+    const shortNamesReverse = getShortNamesReverse(shortNames);
+
     try {
         const files = await fs.readdir(iconsDir);
         const svgs = files.filter(file => file.endsWith(".svg"));
@@ -109,13 +146,13 @@ router.get("/readme", async (_req: Request, res: Response) => {
             const leftId = leftSide.replace(".svg", "");
             const leftAlias = shortNamesReverse[leftId] ?
                 `\`${shortNamesReverse[leftId].join(", ")}\`` : "-";
-            let row = `| \`${leftId}\` | <img src="./icons/${leftId}.svg" width="48" /> | ${leftAlias}`;
+            let row = `| \`${leftId}\` | <img src="./icons/${gameStr}/${leftId}.svg" width="48" /> | ${leftAlias}`;
 
             if (rightSide) {
                 const rightId = rightSide.replace(".svg", "");
                 const rightAlias = shortNamesReverse[rightId] ?
                     `\`${shortNamesReverse[rightId].join(", ")}\`` : "-";
-                row += ` | \`${rightId}\` | <img src="./icons/${rightId}.svg" width="48" /> | ${rightAlias}`;
+                row += ` | \`${rightId}\` | <img src="./icons/${gameStr}/${rightId}.svg" width="48" /> | ${rightAlias}`;
             } else {
                 row += ` | | | `;
             }
