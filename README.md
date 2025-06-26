@@ -1,12 +1,12 @@
 <div align="left">
 <a href="./src/README_zh-CN.md">
-  <img src="https://img.shields.io/badge/Chinese-blue?style=for-the-badge&logo=readme&logoColor=white" alt="中文"/>
+  <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-blue?style=for-the-badge&logo=readme&logoColor=white" alt="中文"/>
 </a>&nbsp;|&nbsp;
 <a href="./README.md">
   <img src="https://img.shields.io/badge/English-green?style=for-the-badge&logo=readme&logoColor=white" alt="English"/>
 </a>&nbsp;|&nbsp;
 <a href="https://zyc.su/" target="_blank">
-  <img src="https://img.shields.io/badge/Author%20Blog-orange?style=for-the-badge&logo=firefox-browser&logoColor=white" alt="Blog"/>
+  <img src="https://img.shields.io/badge/Blog-orange?style=for-the-badge&logo=firefox-browser&logoColor=white" alt="Blog"/>
 </a>&nbsp;|&nbsp;
 <a href="https://afdian.com/a/AdsRule" target="_blank">
   <img src="https://img.shields.io/badge/Sponsor%20Me-ffd700?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white&labelColor=ff9800" alt="Sponsor Me"/>
