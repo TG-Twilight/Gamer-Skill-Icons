@@ -1,12 +1,12 @@
 <div align="left">
 <a href="./src/README_zh-CN.md">
-  <img src="https://img.shields.io/badge/Chinese-blue?style=for-the-badge&logo=readme&logoColor=white" alt="Chinese"/>
+  <img src="https://img.shields.io/badge/Chinese-blue?style=for-the-badge&logo=readme&logoColor=white" alt="中文"/>
 </a>&nbsp;|&nbsp;
 <a href="./README.md">
   <img src="https://img.shields.io/badge/English-green?style=for-the-badge&logo=readme&logoColor=white" alt="English"/>
 </a>&nbsp;|&nbsp;
 <a href="https://zyc.su/" target="_blank">
-  <img src="https://img.shields.io/badge/Author%20Blog-orange?style=for-the-badge&logo=firefox-browser&logoColor=white" alt="Author Blog"/>
+  <img src="https://img.shields.io/badge/Author%20Blog-orange?style=for-the-badge&logo=firefox-browser&logoColor=white" alt="Blog"/>
 </a>&nbsp;|&nbsp;
 <a href="https://afdian.com/a/AdsRule" target="_blank">
   <img src="https://img.shields.io/badge/Sponsor%20Me-ffd700?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white&labelColor=ff9800" alt="Sponsor Me"/>
@@ -126,7 +126,7 @@ API will be available at `http://localhost:3000/icons?...`
 
 ## 🍁Credits
 
-- Operator icons originally from [@marcopixel/r6operators-website](https://github.com/marcopixel/r6operators-website)
+- Operator icons originally from [@marcopixel/r6operators-website](https://github.com/marcopixel/r6operators)
 - Many modifications and inspiration from [@syvixor/skills-icons](https://github.com/syvixor/skills-icons)
 
 ---
