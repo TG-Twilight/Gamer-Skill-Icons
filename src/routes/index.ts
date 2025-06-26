@@ -6,9 +6,13 @@ import { generateSVG } from "../utils";
 
 const router: Router = express.Router();
 
+function getIconsBaseDir(): string {
+    return path.join(process.cwd(), "icons");
+}
+
 /** 动态获取所有游戏名（即 icons 目录下的所有文件夹） */
 async function getAllGames(): Promise<string[]> {
-    const iconsBaseDir = path.join(__dirname, "../../icons");
+    const iconsBaseDir = getIconsBaseDir();
     const entries = await fs.readdir(iconsBaseDir, { withFileTypes: true });
     return entries.filter(e => e.isDirectory()).map(e => e.name);
 }
@@ -48,7 +52,9 @@ router.get("/icons", async (req: Request, res: Response) => {
     const { i, perline, radius = "25", game } = req.query;
     const games = await getAllGames();
     const gameStr = typeof game === "string" && games.includes(game) ? game : games[0]; // 默认第一个游戏
-    const iconsDir = path.join(__dirname, "../../icons", gameStr);
+
+    const iconsBaseDir = getIconsBaseDir();
+    const iconsDir = path.join(iconsBaseDir, gameStr);
 
     const minRadius = 0;
     const maxRadius = 100;
@@ -106,6 +112,7 @@ router.get("/icons", async (req: Request, res: Response) => {
 
             return res.status(200).json({
                 status: res.statusCode,
+                total: icons.length,
                 icons
             });
         } catch (error) {
@@ -122,7 +129,10 @@ router.get("/readme", async (req: Request, res: Response) => {
     const { game } = req.query;
     const games = await getAllGames();
     const gameStr = typeof game === "string" && games.includes(game) ? game : games[0];
-    const iconsDir = path.join(__dirname, "../../icons", gameStr);
+
+    const iconsBaseDir = getIconsBaseDir();
+    const iconsDir = path.join(iconsBaseDir, gameStr);
+
     const shortNames = await getShortNames(gameStr);
     const shortNamesReverse = getShortNamesReverse(shortNames);
 
