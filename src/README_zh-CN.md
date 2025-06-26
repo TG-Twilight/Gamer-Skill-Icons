@@ -13,16 +13,16 @@
 </a>
 </div>
 
-# 🍁R6 Operators Icons 彩虹六号干员图标
+# 🍁Gamer Skill Icons
 <p align="center">
-   <img src="https://raw.githubusercontent.com/TG-Twilight/R6-Operators-Icons/refs/heads/main/src/banner.webp">
+   <img src="https://raw.githubusercontent.com/TG-Twilight/Gamer-Skill-Icons/refs/heads/main/src/banner.webp">
 </p>
 
 
-[![GitHub stars](https://img.shields.io/github/stars/TG-Twilight/R6-Operators-Icons)](https://github.com/TG-Twilight/R6-Operators-Icons/stargazers)
-[![GitHub license](https://img.shields.io/github/license/TG-Twilight/R6-Operators-Icons)](./LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/TG-Twilight/Gamer-Skill-Icons)](https://github.com/TG-Twilight/Gamer-Skill-Icons/stargazers)
+[![GitHub license](https://img.shields.io/github/license/TG-Twilight/Gamer-Skill-Icons)](./LICENSE)
 
-一个提供 彩虹六号：围攻X 干员SVG图标的API和静态资源库，适用于网页、机器人和创意项目。
+一个提供 彩虹六号：围攻X 干员、地狱潜兵2 战备的SVG图标的API和静态资源库，适用于网页、机器人和创意项目。
 现在，你可以在你的[个人博客](zyc.su)上像其他人展示自己的“Skill”一样展示你擅长/喜爱的干员！
 
 ---
@@ -45,7 +45,7 @@ GET /icons?i=ash
 
 示例：  
 <p> 
-  <img src="https://github.com/TG-Twilight/R6-Operators-Icons/blob/main/icons/fuze.svg" width="672"/>
+  <img src="https://github.com/TG-Twilight/Gamer-Skill-Icons/blob/main/icons/fuze.svg" width="672"/>
 </p>
 
 ---
@@ -85,7 +85,7 @@ GET /icons
 [https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash](https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash)
 
 <p>
-  <img src="https://r6-operators-icons.vercel.app/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
+  <img src="https://Gamer-Skill-Icons.vercel.app/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
 </p>
 
 ### 防守方（每个图标96×96）
@@ -103,8 +103,8 @@ GET /icons
 克隆并运行：
 
 ```bash
-git clone https://github.com/TG-Twilight/R6-Operators-Icons.git
-cd R6-Operators-Icons
+git clone https://github.com/TG-Twilight/Gamer-Skill-Icons.git
+cd Gamer-Skill-Icons
 npm install
 npm run build
 npm start
@@ -127,7 +127,7 @@ API地址为 `http://localhost:3000/icons?...`
 
 ## 🍁鸣谢
 
-- 干员图标取自 [@marcopixel/r6operators-website](https://github.com/marcopixel/r6operators-website)
+- 干员图标取自 [@marcopixel/r6operators-website](https://github.com/marcopixel/r6operators)
 - 做了很多修改，但灵感来自 [@syvixor/skills-icons](https://github.com/syvixor/skills-icons)
 
 ---
