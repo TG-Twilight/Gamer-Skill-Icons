@@ -1,8 +1,8 @@
 <div align="left">
-<a href="./src/README_zh-CN.md">
+<a href="https://github.com/TG-Twilight/Gamer-Skill-Icons/blob/main/src/README_zh-CN.md">
   <img src="https://img.shields.io/badge/%E4%B8%AD%E6%96%87-blue?style=for-the-badge&logo=readme&logoColor=white" alt="中文"/>
 </a>&nbsp;|&nbsp;
-<a href="./README.md">
+<a href="https://github.com/TG-Twilight/Gamer-Skill-Icons/blob/main/README.md">
   <img src="https://img.shields.io/badge/English-green?style=for-the-badge&logo=readme&logoColor=white" alt="English"/>
 </a>&nbsp;|&nbsp;
 <a href="https://zyc.su/" target="_blank">
@@ -81,7 +81,7 @@ Returns a JSON list of all operator IDs.
 
 ### Attackers (each icon 96×96)
 
-[https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash](https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash)
+[https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash](https://r6.zyc.su/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash)
 
 <p>
   <img src="https://r6.zyc.su/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
@@ -89,7 +89,7 @@ Returns a JSON list of all operator IDs.
 
 ### Defenders (each icon 96×96)
 
-[https://r6.zyc.su/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami](https://r6.zyc.su/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami)
+[https://r6.zyc.su/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami](https://r6.zyc.su/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami)
 
 <p>
   <img src="https://r6.zyc.su/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami" width="672"/>
