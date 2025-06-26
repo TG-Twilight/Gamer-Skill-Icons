@@ -15,7 +15,7 @@
 
 # 🍁R6 Operators Icons
 <p align="center">
-   <img src="https://raw.githubusercontent.com/TG-Twilight/R6-Operators-Icons/refs/heads/main/src/banner.webp">
+   <img src="https://raw.githubusercontent.com/TG-Twilight/Gamer-Skill-Icons/refs/heads/main/src/banner.webp">
 </p>
 
 [![GitHub stars](https://img.shields.io/github/stars/TG-Twilight/R6-Operators-Icons)](https://github.com/TG-Twilight/R6-Operators-Icons/stargazers)
