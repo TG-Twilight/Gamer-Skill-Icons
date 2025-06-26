@@ -44,7 +44,7 @@ GET /icons?i=ash
 
 Example:  
 <p> 
-  <img src="https://github.com/TG-Twilight/Gamer-Skill-Icons/blob/main/icons/fuze.svg" width="672"/>
+  <img src="https://github.com/TG-Twilight/Gamer-Skill-Icons/blob/main/icons/r6x/fuze.svg" width="672"/>
 </p>
 
 ---
