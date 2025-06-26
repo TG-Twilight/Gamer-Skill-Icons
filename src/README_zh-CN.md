@@ -85,7 +85,7 @@ GET /icons
 [https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash](https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash)
 
 <p>
-  <img src="https://Gamer-Skill-Icons.vercel.app/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
+  <img src="https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
 </p>
 
 ### 防守方（每个图标96×96）
