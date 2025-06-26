@@ -21,7 +21,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/TG-Twilight/Gamer-Skill-Icons)](https://github.com/TG-Twilight/Gamer-Skill-Icons/stargazers)
 [![GitHub license](https://img.shields.io/github/license/TG-Twilight/Gamer-Skill-Icons)](./LICENSE)
 
-A public API and static resource library that provides SVG icons for Rainbow Six: Siege X Operators and HERRDRIVERS 2 War Resources, suitable for websites, bots, and creative projects.
+A public API and static resource library that provides SVG icons for Rainbow Six: Siege X Operators and HELLDIVERS 2 War Resources, suitable for websites, bots, and creative projects.
 Now you can showcase your favorite or skilled R6 operators on your [personal blog](https://zyc.su) just like people display their “Skill” badges!
 
 ---
