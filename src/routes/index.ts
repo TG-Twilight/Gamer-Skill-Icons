@@ -4,92 +4,11 @@ import path from "path";
 import fs from "fs/promises";
 
 import { generateSVG } from "../utils";
+import shortNames from "./r6x/shortNames";
 
 const router: Router = express.Router();
 
-const shortNames: Record<string, string> = {
-    "ace": "ace",
-    "alibi": "alibi",
-    "amaru": "amaru",
-    "aruni": "aruni",
-    "ash": "ash",
-    "azami": "azami",
-    "bandit": "bandit",
-    "blackbeard": "blackbeard",
-    "blitz": "blitz",
-    "brava": "brava",
-    "buck": "buck",
-    "capitao": "capitao",
-    "castle": "castle",
-    "caveira": "caveira",
-    "clash": "clash",
-    "deimos": "deimos",
-    "doc": "doc",
-    "dokkaebi": "dokkaebi",
-    "echo": "echo",
-    "ela": "ela",
-    "fenrir": "fenrir",
-    "finka": "finka",
-    "flores": "flores",
-    "frost": "frost",
-    "fuze": "fuze",
-    "glaz": "glaz",
-    "goyo": "goyo",
-    "gridlock": "gridlock",
-    "grim": "grim",
-    "hibana": "hibana",
-    "iana": "iana",
-    "iq": "iq",
-    "jackal": "jackal",
-    "jager": "jager",
-    "kaid": "kaid",
-    "kali": "kali",
-    "kapkan": "kapkan",
-    "lesion": "lesion",
-    "lion": "lion",
-    "maestro": "maestro",
-    "maverick": "maverick",
-    "melusi": "melusi",
-    "mira": "mira",
-    "montagne": "montagne",
-    "mozzie": "mozzie",
-    "mute": "mute",
-    "nokk": "nokk",
-    "nomad": "nomad",
-    "oryx": "oryx",
-    "osa": "osa",
-    "pulse": "pulse",
-    "ram": "ram",
-    "rauora": "rauora",
-    "recruit_blue": "recruit_blue",
-    "recruit_green": "recruit_green",
-    "recruit_orange": "recruit_orange",
-    "recruit_red": "recruit_red",
-    "recruit_yellow": "recruit_yellow",
-    "rook": "rook",
-    "sens": "sens",
-    "sentry": "sentry",
-    "skopos": "skopos",
-    "sledge": "sledge",
-    "smoke": "smoke",
-    "solis": "solis",
-    "striker": "striker",
-    "tachanka": "tachanka",
-    "thatcher": "thatcher",
-    "thermite": "thermite",
-    "thorn": "thorn",
-    "thunderbird": "thunderbird",
-    "tubarao": "tubarao",
-    "twitch": "twitch",
-    "valkyrie": "valkyrie",
-    "vigil": "vigil",
-    "wamai": "wamai",
-    "warden": "warden",
-    "ying": "ying",
-    "zero": "zero",
-    "zofia": "zofia",
-}
-
+// 自动生成 shortNamesReverse
 const shortNamesReverse: Record<string, string[]> = {};
 Object.entries(shortNames).forEach(([short, full]) => {
     if (!shortNamesReverse[full]) {
@@ -148,7 +67,7 @@ router.get("/icons", async (req: Request, res: Response) => {
         res.setHeader("Content-Type", "image/svg+xml");
         return res.status(200).send(response);
     } else {
-        // 你原有的列出所有图标部分
+        // 列出所有图标部分
         try {
             const files = await fs.readdir(iconsDir);
             const icons = files
