@@ -84,9 +84,9 @@ GET /icons
 
 ### 进攻方（每个图标96×96）
 
-https://r6.zyc.su/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash
+https://r6.zyc.su/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash
 
-https://r6.awads.cc/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash
+https://r6.awads.cc/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash
 
 <p>
   <img src="https://r6.zyc.su/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
@@ -94,9 +94,9 @@ https://r6.awads.cc/api/icons?i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash
 
 ### 防守方（每个图标96×96）
 
-https://r6.zyc.su/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami
+https://r6.zyc.su/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami
 
-https://r6.awads.cc/api/icons?i=recruit_red,rook,kapkan,mute,smoke,jager,azami
+https://r6.awads.cc/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami
 
 <p>
   <img src="https://r6.zyc.su/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami" width="672"/>
