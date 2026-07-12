@@ -79,26 +79,26 @@ Returns a JSON list of all operator IDs.
 
 ## 🍁Examples
 
-**We provide two APIs: r6.zyc.su or r6.awads.cc**
+**We provide two APIs: r6.awads.cc **
 
 ### Attackers (each icon 96×96)
 
-https://r6.zyc.su/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash
+https://r6.awads.cc/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash
 
 https://r6.awads.cc/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash
 
 <p>
-  <img src="https://r6.zyc.su/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
+  <img src="https://r6.awads.cc/api/icons?game=r6x&i=recruit_blue,fuze,buck,blitz,montagne,nokk,ash" width="672"/>
 </p>
 
 ### Defenders (each icon 96×96)
 
-https://r6.zyc.su/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami
+https://r6.awads.cc/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami
 
 https://r6.awads.cc/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami
 
 <p>
-  <img src="https://r6.zyc.su/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami" width="672"/>
+  <img src="https://r6.awads.cc/api/icons?game=r6x&i=recruit_red,rook,kapkan,mute,smoke,jager,azami" width="672"/>
 </p>
 
 ---
